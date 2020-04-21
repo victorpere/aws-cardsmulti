@@ -5,6 +5,7 @@ custom:
   currentStage: ${opt:stage, self:provider.stage}
   lambdaRunTime: python3.7
   socketConnectionsTableName: socketConnectionsCardMulti-#{AWS::AccountId}-${self:custom.currentStage}
+  gamesTableName: gamesCardMulti-#{AWS::AccountId}-${self:custom.currentStage}
 
 provider:
   name: aws
@@ -70,6 +71,16 @@ functions:
       - { Ref: PythonPackageLayerLambdaLayer }
     environment:
       SOCKET_CONNECTIONS_TABLE_NAME: ${self:custom.socketConnectionsTableName}
+  
+  onCreateGameHandler:
+    handler: on_creategame_handler.handle
+    events:
+      - websocket:
+          route: onCreateGame
+    layers:
+      - { Ref: PythonPackageLayerLambdaLayer }
+    environment:
+      GAMES_TABLE_NAME: ${self:custom.gamesTableName}
       
 resources:
   Resources:
@@ -83,6 +94,20 @@ resources:
             AttributeType: S
         KeySchema:
           - AttributeName: connectionId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        SSESpecification:
+          SSEEnabled: true
+    gamesTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:custom.gamesTableName}
+        AttributeDefinitions:
+          - AttributeName: gameId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: gameId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
