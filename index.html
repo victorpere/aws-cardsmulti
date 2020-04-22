@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>victor's chat</title>
+    <title>cardsmulti aws tester</title>
 </head>
 <body>
     
@@ -55,11 +55,11 @@ Messages:
         socket.onopen = function(event) {
             document.getElementById("socketState").innerHTML = 'Connection Open';
 			
-			//var senderName = document.getElementById("senderInput").value;
+			var senderName = document.getElementById("senderInput").value;
 			//payload = { "action": "onRegister", "sender": senderName };
             //socket.send(JSON.stringify(payload));
             
-            payload = { "action": "onCreateGame" };
+            payload = { "action": "onCreateGame", "creator": senderName };
             socket.send(JSON.stringify(payload));
 
             document.getElementById("createGameButton").disabled = true;
