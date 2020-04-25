@@ -4,8 +4,8 @@ frameworkVersion: "1.48.2"
 custom:
   currentStage: ${opt:stage, self:provider.stage}
   lambdaRunTime: python3.7
-  socketConnectionsTableName: socketConnectionsCardMulti2-#{AWS::AccountId}-${self:custom.currentStage}
-  gamesTableName: gamesCardMulti2-#{AWS::AccountId}-${self:custom.currentStage}
+  socketConnectionsTableName: cardsmulti-connections-#{AWS::AccountId}-${self:custom.currentStage}
+  gamesTableName: cardsmulti-games-#{AWS::AccountId}-${self:custom.currentStage}
 
 provider:
   name: aws
@@ -107,9 +107,13 @@ resources:
         AttributeDefinitions:
           - AttributeName: gameId
             AttributeType: S
+          - AttributeName: gameCode
+            AttributeType: S
         KeySchema:
           - AttributeName: gameId
             KeyType: HASH
+          - AttributeName: gameCode
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: true
