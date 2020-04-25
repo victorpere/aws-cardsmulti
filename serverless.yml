@@ -1,11 +1,11 @@
-service: cardsmulti
+service: cardsmulti2
 frameworkVersion: "1.48.2"
 
 custom:
   currentStage: ${opt:stage, self:provider.stage}
   lambdaRunTime: python3.7
-  socketConnectionsTableName: socketConnectionsCardMulti-#{AWS::AccountId}-${self:custom.currentStage}
-  gamesTableName: gamesCardMulti-#{AWS::AccountId}-${self:custom.currentStage}
+  socketConnectionsTableName: socketConnectionsCardMulti2-#{AWS::AccountId}-${self:custom.currentStage}
+  gamesTableName: gamesCardMulti2-#{AWS::AccountId}-${self:custom.currentStage}
 
 provider:
   name: aws
