@@ -8,16 +8,22 @@ dynamodb = boto3.client('dynamodb')
 
 
 def handle(event, context):
+    # Setup
+    connectionsTableName = os.environ['SOCKET_CONNECTIONS_TABLE_NAME']
+    gamesTableName = os.environ['GAMES_TABLE_NAME']
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', 
+    endpoint_url = "https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"])
+
+    # Request content
     connectionId = event['requestContext']['connectionId']
     playerName = json.loads(event['body'])['creator']
     gameId = str(uuid.uuid4())
     gameCode = str(random.randrange(1000,9999))
 
     # Create a new record for the game
-    dynamodb.put_item(TableName=os.environ['GAMES_TABLE_NAME'], Item={'gameId': {'S': gameId}, 'gameCode': {'S': gameCode}, 'creator': {'S': playerName}})
+    dynamodb.put_item(TableName=gamesTableName, Item={'gameId': {'S': gameId}, 'gameCode': {'S': gameCode}, 'creator': {'S': playerName}})
     
     # Update the connection record with the gameId and playerName
-    connectionsTableName = os.environ['SOCKET_CONNECTIONS_TABLE_NAME']
     dynamodb.update_item(
         TableName=connectionsTableName,
         Key={ 'connectionId': {'S': connectionId}},
@@ -30,9 +36,6 @@ def handle(event, context):
     )
 
     # Send the gameId to the creator
-    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', 
-    endpoint_url = "https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"])
-
     apigatewaymanagementapi.post_to_connection(
             Data=json.dumps({'gameId': gameId, 'gameCode': gameCode}),
             ConnectionId=connectionId
