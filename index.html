@@ -11,12 +11,18 @@
 </body>
 
 <!--<input id="webSocketConnection" type="text" size="80" value="WEBSOCKET_ENDPOINT_URL"><br/><br/>-->
-<input id="senderInput" type="text" size="50" placeholder="Enter your name"><br/><br/>
-<input id="messageInput" type="text" size="50" placeholder="Enter message to send"><br/><br/>
-<button id="createGameButton" onclick="connectToWebSocket()">Create game</button> 
-<button id="joinGameButton" onclick="">Join game</button> 
+
+<input id="senderInput" type="text" size="50" placeholder="Enter your name"><br/>
+<button id="connectButton" onclick="connectToWebSocket()">Connect</button><br/><br/>
+
+<button id="createGameButton" onclick="createGame()">Create game</button> 
+<button id="joinGameButton" onclick="joinGame()">Join game</button><br/><br/>
+
+<input id="messageInput" type="text" size="50" placeholder="Enter message to send"><br/>
+<button id="sendMessageButton" onclick="sendMessage()">Send</button><br/><br/>
+
 <button id="disconnectButton" onclick="disconnect()">Disconnect</button> 
-<button id="sendMessageButton" onclick="sendMessage()">Send</button><br/>
+
 <p id="socketState"></p>
 
 Messages:
@@ -43,6 +49,17 @@ Messages:
 		document.getElementById("messageInput").value = "";
     }
 
+    function createGame() {
+        var senderName = document.getElementById("senderInput").value;
+		    
+        payload = { "action": "onCreateGame", "creator": senderName };
+        socket.send(JSON.stringify(payload));
+    }
+
+    function joinGame() {
+
+    }
+
     function connectToWebSocket(){
 		var sender = document.getElementById("senderInput");
 		if (sender.value == "") {
@@ -54,15 +71,13 @@ Messages:
 
         socket.onopen = function(event) {
             document.getElementById("socketState").innerHTML = 'Connection Open';
-			
-			var senderName = document.getElementById("senderInput").value;
-			//payload = { "action": "onRegister", "sender": senderName };
-            //socket.send(JSON.stringify(payload));
-            
-            payload = { "action": "onCreateGame", "creator": senderName };
-            socket.send(JSON.stringify(payload));
 
-            document.getElementById("createGameButton").disabled = true;
+            document.getElementById("senderInput").disabled = true;
+            document.getElementById("connectButton").disabled = true;
+
+            document.getElementById("messageInput").disabled = false;
+            document.getElementById("createGameButton").disabled = false;
+            document.getElementById("joinGameButton").disabled = false;
             document.getElementById("disconnectButton").disabled = false;
             document.getElementById("sendMessageButton").disabled = false;
         };
@@ -79,7 +94,12 @@ Messages:
         socket.onclose = function(event) {
             document.getElementById("socketState").innerHTML = 'Connection Closed';
 
-            document.getElementById("createGameButton").disabled = false;
+            document.getElementById("senderInput").disabled = false;
+            document.getElementById("connectButton").disabled = false;
+
+            document.getElementById("messageInput").disabled = true;
+            document.getElementById("createGameButton").disabled = true;
+            document.getElementById("joinGameButton").disabled = true;
             document.getElementById("disconnectButton").disabled = true;
             document.getElementById("sendMessageButton").disabled = true;
         };
