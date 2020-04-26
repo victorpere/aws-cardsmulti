@@ -82,7 +82,18 @@ functions:
     environment:
       GAMES_TABLE_NAME: ${self:custom.gamesTableName}
       SOCKET_CONNECTIONS_TABLE_NAME: ${self:custom.socketConnectionsTableName}
-      
+  
+  onJoinGameHandler:
+    handler: on_joingame_handler.handle
+    events:
+      - websocket:
+          route: onJoinGame
+    layers:
+      - { Ref: PythonPackageLayerLambdaLayer }
+    environment:
+      GAMES_TABLE_NAME: ${self:custom.gamesTableName}
+      SOCKET_CONNECTIONS_TABLE_NAME: ${self:custom.socketConnectionsTableName}
+
 resources:
   Resources:
     socketConnectionsTable:
@@ -114,6 +125,15 @@ resources:
             KeyType: HASH
           - AttributeName: gameCode
             KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: gameCodeIndex
+            KeySchema:
+              - AttributeName: gameCode
+                KeyType: HASH
+            Projection:
+              NonKeyAttributes:
+                - gameId
+              ProjectionType: INCLUDE
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: true

@@ -30,6 +30,13 @@ Messages:
 
 <script>
 
+document.getElementById("senderInput").disabled = false;
+    document.getElementById("senderInput").disabled = false;
+    document.getElementById("connectButton").disabled = false;
+
+    document.getElementById("messageInput").disabled = true;
+    document.getElementById("createGameButton").disabled = true;
+    document.getElementById("joinGameButton").disabled = true;
     document.getElementById("disconnectButton").disabled = true;
     document.getElementById("sendMessageButton").disabled = true;
     document.getElementById("socketState").innerHTML = 'Connection Closed';
@@ -57,7 +64,13 @@ Messages:
     }
 
     function joinGame() {
+        var gameCode = prompt("Game code:", "");
 
+        if (gameCode != null && gameCode != "") {
+            var senderName = document.getElementById("senderInput").value;
+            payload = { "action": "onJoinGame", "playerName": senderName, "gameCode": gameCode };
+            socket.send(JSON.stringify(payload));
+        }
     }
 
     function connectToWebSocket(){
