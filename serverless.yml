@@ -120,6 +120,8 @@ resources:
             AttributeType: S
           - AttributeName: gameCode
             AttributeType: S
+          - AttributeName: creator
+            AttributeType: S
         KeySchema:
           - AttributeName: gameId
             KeyType: HASH
