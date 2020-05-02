@@ -21,7 +21,12 @@ def handle(event, context):
     gameCode = str(random.randrange(1000,9999))
 
     # Create a new record for the game
-    dynamodb.put_item(TableName=gamesTableName, Item={'gameId': {'S': gameId}, 'gameCode': {'S': gameCode}, 'creator': {'S': playerName}})
+    dynamodb.put_item(TableName=gamesTableName, Item={
+        'gameId': {'S': gameId}, 
+        'gameCode': {'S': gameCode}, 
+        'creator': {'S': playerName},
+        'players': {'SS': [ playerName ]}
+    })
     
     # Update the connection record with the gameId and playerName
     dynamodb.update_item(
