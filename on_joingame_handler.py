@@ -52,10 +52,24 @@ def handle(event, context):
         ReturnValues="UPDATED_NEW"
     )
 
-    # Send connectionIds to all players in the game
+    # Get all connection records in this game
+    connections = connectionsTable.query(
+        IndexName='gameIdIndex',
+        KeyConditionExpression=Key('gameId').eq(gameId)
+    )
+
+    # Something is wrong
+    if connections['Count'] == 0:
+        apigatewaymanagementapi.post_to_connection(
+                Data=json.dumps({ 'status': 'Error' }),
+                ConnectionId=connectionId
+            )
+        return {}
+
+    # Send confirmation
     apigatewaymanagementapi.post_to_connection(
             Data=json.dumps({
-                'status': 'Game found', 
+                'status': 'Joined', 
                 'gameCode': gameCode,
                 'gameId': gameId,
                 'creator': creator,
@@ -63,6 +77,17 @@ def handle(event, context):
                 'playerName': playerName
             }),
             ConnectionId=connectionId
+        )
+
+    # Send connectionIds to all players in the game
+    for connectedConnection in connections['Items']:
+            apigatewaymanagementapi.post_to_connection(
+            Data=json.dumps({
+                'status': 'New connection',
+                'connectionId': connectionId,
+                'playerName': playerName
+            }),
+            ConnectionId=connectedConnection['connectionId']
         )
 
     return {}

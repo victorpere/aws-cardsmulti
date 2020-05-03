@@ -104,9 +104,21 @@ resources:
         AttributeDefinitions:
           - AttributeName: connectionId
             AttributeType: S
+          - AttributeName: gameId
+            AttributeType: S
         KeySchema:
           - AttributeName: connectionId
             KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: gameIdIndex
+            KeySchema:
+              - AttributeName: gameId
+                KeyType: HASH
+            Projection:
+              NonKeyAttributes:
+                - connectionId
+                - playerName
+              ProjectionType: INCLUDE
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: true
