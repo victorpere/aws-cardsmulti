@@ -36,13 +36,15 @@ def handle(event, context):
     # Get game info
     game = games['Items'][0]
     gameId = game['gameId']
+    creator = game['creator']
 
     # Send connectionIds to all players in the game
     apigatewaymanagementapi.post_to_connection(
             Data=json.dumps({
                 'status': 'Game found', 
                 'gameCode': gameCode,
-                'gameId': gameId
+                'gameId': gameId,
+                'creator': creator
             }),
             ConnectionId=connectionId
         )

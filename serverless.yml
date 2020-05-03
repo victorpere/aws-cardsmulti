@@ -132,9 +132,11 @@ resources:
             KeySchema:
               - AttributeName: gameCode
                 KeyType: HASH
+              - AttributeName: gameId
+                KeyType: RANGE
             Projection:
               NonKeyAttributes:
-                - gameId
+                - creator
               ProjectionType: INCLUDE
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
