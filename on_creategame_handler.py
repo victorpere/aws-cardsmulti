@@ -25,7 +25,7 @@ def handle(event, context):
         'gameId': {'S': gameId}, 
         'gameCode': {'S': gameCode}, 
         'creator': {'S': playerName},
-        'players': {'SS': [ playerName ]}
+        'players': {'SS': [ connectionId ]}
     })
     
     # Update the connection record with the gameId and playerName

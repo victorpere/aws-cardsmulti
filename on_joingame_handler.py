@@ -79,13 +79,19 @@ def handle(event, context):
             ConnectionId=connectionId
         )
 
+    # Create list of all connections
+    connectionIds = []
+    for connectedConnection in connections['Items']:
+        connectionIds.append(connectedConnection['connectionId'])
+
     # Send connectionIds to all players in the game
     for connectedConnection in connections['Items']:
             apigatewaymanagementapi.post_to_connection(
             Data=json.dumps({
                 'status': 'New connection',
                 'connectionId': connectionId,
-                'playerName': playerName
+                'playerName': playerName,
+                'connections': connectionIds # str(connectionIds)
             }),
             ConnectionId=connectedConnection['connectionId']
         )
