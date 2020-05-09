@@ -17,7 +17,8 @@
 
 <button id="createGameButton" onclick="createGame()">Create game</button> 
 <button id="findGameButton" onClick="findGame()">Find game</button>
-<button id="joinGameButton" onclick="joinGame()">Join game</button><br/><br/>
+<button id="joinGameButton" onclick="joinGame()">Join game</button>
+<button id="disconnectGameButton" onclick="disconnectGame()">Disconnect from game</button><br/><br/>
 
 <input id="messageInput" type="text" size="50" placeholder="Enter message to send"><br/>
 <button id="sendMessageButton" onclick="sendMessage()">Send</button><br/><br/>
@@ -29,6 +30,9 @@
 Messages:
 <p id="messages"></p>   
 
+<input type="hidden" id="gameId" name="gameId" value="" />
+<input type="hidden" id="connections" name="connections" value="" />
+
 <script>
 
 document.getElementById("senderInput").disabled = false;
@@ -39,9 +43,13 @@ document.getElementById("senderInput").disabled = false;
     document.getElementById("createGameButton").disabled = true;
     document.getElementById("findGameButton").disabled = true;
     document.getElementById("joinGameButton").disabled = true;
+    document.getElementById("disconnectGameButton").disabled = true;
     document.getElementById("disconnectButton").disabled = true;
     document.getElementById("sendMessageButton").disabled = true;
     document.getElementById("socketState").innerHTML = 'Connection Closed';
+
+    document.getElementById("gameId").value = ""
+    document.getElementById("connections").value = ""
 
     //webSocketConnection = document.getElementById("webSocketConnection").value;
 	webSocketConnection = "wss://8vuqtnjhvk.execute-api.us-east-2.amazonaws.com/dev";
@@ -59,6 +67,9 @@ document.getElementById("senderInput").disabled = false;
     }
 
     function createGame() {
+        document.getElementById("gameId").value = ""
+        document.getElementById("connections").value = ""
+        
         var senderName = document.getElementById("senderInput").value;
 		    
         payload = { "action": "onCreateGame", "creator": senderName };
@@ -76,6 +87,9 @@ document.getElementById("senderInput").disabled = false;
     }
 
     function joinGame() {
+        document.getElementById("gameId").value = ""
+        document.getElementById("connections").value = ""
+        
         var gameId = prompt("Game Id:", "");
 
         if (gameId != null && gameId != "") {
@@ -83,6 +97,14 @@ document.getElementById("senderInput").disabled = false;
             payload = { "action": "onJoinGame", "playerName": senderName, "gameId": gameId };
             socket.send(JSON.stringify(payload));
         }
+    }
+
+    function disconnectGame() {
+        document.getElementById("gameId").value = ""
+        document.getElementById("connections").value = ""
+        document.getElementById("createGameButton").disabled = true;
+        document.getElementById("joinGameButton").disabled = false;
+        document.getElementById("disconnectGameButton").disabled = true;
     }
 
     function connectToWebSocket(){
@@ -106,9 +128,27 @@ document.getElementById("senderInput").disabled = false;
             document.getElementById("joinGameButton").disabled = false;
             document.getElementById("disconnectButton").disabled = false;
             document.getElementById("sendMessageButton").disabled = false;
+
+            document.getElementById("gameId").value = ""
+            document.getElementById("connections").value = ""
         };
 
         socket.onmessage = function(event) {
+            var messageContent = JSON.parse(event.data);
+
+            if (messageContent.status == "Joined") {
+                document.getElementById("gameId").value = messageContent.gameId
+                document.getElementById("connections").value = JSON.stringify(messageContent.players);
+
+                document.getElementById("socketState").innerHTML += '\nJoined game:' + messageContent.gameId;
+
+                document.getElementById("createGameButton").disabled = true;
+                document.getElementById("joinGameButton").disabled = true;
+                document.getElementById("disconnectGameButton").disabled = false;
+            } else if (messageContent.Status == "New connection") {
+
+            }
+
             document.getElementById("messages").innerHTML += event.data + '<br/>'
         };
 
@@ -127,8 +167,12 @@ document.getElementById("senderInput").disabled = false;
             document.getElementById("createGameButton").disabled = true;
             document.getElementById("findGameButton").disabled = true;
             document.getElementById("joinGameButton").disabled = true;
+            document.getElementById("disconnectGameButton").disabled = true;
             document.getElementById("disconnectButton").disabled = true;
             document.getElementById("sendMessageButton").disabled = true;
+
+            document.getElementById("gameId").value = ""
+            document.getElementById("connections").value = ""
         };
     }
 
