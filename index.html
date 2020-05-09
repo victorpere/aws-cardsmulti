@@ -136,17 +136,18 @@ document.getElementById("senderInput").disabled = false;
         socket.onmessage = function(event) {
             var messageContent = JSON.parse(event.data);
 
-            if (messageContent.status == "Joined") {
-                document.getElementById("gameId").value = messageContent.gameId
-                document.getElementById("connections").value = JSON.stringify(messageContent.players);
+            if (messageContent.status == "New connection") {
+                var gameId = messageContent.gameId;
+                var connections = messageContent.connections;
 
-                document.getElementById("socketState").innerHTML += '\nJoined game:' + messageContent.gameId;
+                document.getElementById("gameId").value = gameId;
+                document.getElementById("connections").value = connections.join();
+
+                document.getElementById("socketState").innerHTML += '<br/>Joined game: ' + gameId;
 
                 document.getElementById("createGameButton").disabled = true;
                 document.getElementById("joinGameButton").disabled = true;
                 document.getElementById("disconnectGameButton").disabled = false;
-            } else if (messageContent.Status == "New connection") {
-
             }
 
             document.getElementById("messages").innerHTML += event.data + '<br/>'

@@ -71,7 +71,6 @@ def handle(event, context):
                 'status': 'Joined', 
                 'gameId': gameId,
                 'creator': creator,
-                'players': players,
                 'playerName': playerName
             }),
             ConnectionId=connectionId
@@ -89,7 +88,9 @@ def handle(event, context):
                 'status': 'New connection',
                 'connectionId': connectionId,
                 'playerName': playerName,
-                'connections': connectionIds # str(connectionIds)
+                'gameId': gameId,
+                'creator': creator,
+                'connections': connectionIds
             }),
             ConnectionId=connectedConnection['connectionId']
         )
