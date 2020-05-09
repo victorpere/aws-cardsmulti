@@ -18,18 +18,17 @@ def handle(event, context):
     connectionId = event['requestContext']['connectionId']
     requestBody = json.loads(event['body'])
     playerName = requestBody['playerName']
-    gameCode = requestBody['gameCode']
+    gameId = requestBody['gameId']
 
     # Retrieve the game
     games = gamesTable.query(
-        IndexName='gameCodeIndex',
-        KeyConditionExpression=Key('gameCode').eq(gameCode)
+        KeyConditionExpression=Key('gameId').eq(gameId)
     )
 
     # No matching games
     if games['Count'] == 0:
         apigatewaymanagementapi.post_to_connection(
-                Data=json.dumps({'status': 'Game not found', 'gameCode': gameCode}),
+                Data=json.dumps({'status': 'Game not found', 'gameId': gameId}),
                 ConnectionId=connectionId
             )
         return {}
@@ -70,7 +69,6 @@ def handle(event, context):
     apigatewaymanagementapi.post_to_connection(
             Data=json.dumps({
                 'status': 'Joined', 
-                'gameCode': gameCode,
                 'gameId': gameId,
                 'creator': creator,
                 'players': players,

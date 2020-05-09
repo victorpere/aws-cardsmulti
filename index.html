@@ -76,11 +76,11 @@ document.getElementById("senderInput").disabled = false;
     }
 
     function joinGame() {
-        var gameCode = prompt("Game code:", "");
+        var gameId = prompt("Game Id:", "");
 
-        if (gameCode != null && gameCode != "") {
+        if (gameId != null && gameId != "") {
             var senderName = document.getElementById("senderInput").value;
-            payload = { "action": "onJoinGame", "playerName": senderName, "gameCode": gameCode };
+            payload = { "action": "onJoinGame", "playerName": senderName, "gameId": gameId };
             socket.send(JSON.stringify(payload));
         }
     }
