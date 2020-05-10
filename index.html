@@ -144,6 +144,7 @@ document.getElementById("senderInput").disabled = false;
                 document.getElementById("connections").value = connections.join();
 
                 document.getElementById("socketState").innerHTML += '<br/>Joined game: ' + gameId;
+                document.getElementById("socketState").innerHTML += '<br/>Connections: ' + connections.join();
 
                 document.getElementById("createGameButton").disabled = true;
                 document.getElementById("joinGameButton").disabled = true;
