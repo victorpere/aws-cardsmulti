@@ -104,6 +104,17 @@ functions:
     environment:
       GAMES_TABLE_NAME: ${self:custom.gamesTableName}
 
+  onDisconnectGameHandler:
+    handler: on_disconnectgame_handler.handle
+    events:
+      - websocket:
+          route: onDisconnectGame
+    layers:
+      - { Ref: PythonPackageLayerLambdaLayer }
+    environment:
+      GAMES_TABLE_NAME: ${self:custom.gamesTableName}
+      SOCKET_CONNECTIONS_TABLE_NAME: ${self:custom.socketConnectionsTableName}
+
 resources:
   Resources:
     socketConnectionsTable:

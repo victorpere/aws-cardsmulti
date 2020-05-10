@@ -100,6 +100,11 @@ document.getElementById("senderInput").disabled = false;
     }
 
     function disconnectGame() {
+        var gameId = document.getElementById("gameId").value;
+        var senderName = document.getElementById("senderInput").value;
+        payload = { "action": "onDisconnectGame", "playerName": senderName, "gameId": gameId };
+        socket.send(JSON.stringify(payload));
+
         document.getElementById("gameId").value = ""
         document.getElementById("connections").value = ""
         document.getElementById("createGameButton").disabled = true;
@@ -136,7 +141,7 @@ document.getElementById("senderInput").disabled = false;
         socket.onmessage = function(event) {
             var messageContent = JSON.parse(event.data);
 
-            if (messageContent.status == "New connection") {
+            if (messageContent.status == "New connection" || messageContent.status == "Connections update") {
                 var gameId = messageContent.gameId;
                 var connections = messageContent.connections;
 
