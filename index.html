@@ -59,7 +59,8 @@ document.getElementById("senderInput").disabled = false;
     function sendMessage(){
 		var senderName = document.getElementById("senderInput").value;
 		var messageText = document.getElementById("messageInput").value;
-        payload = { "action": "onMessage", "sender": senderName, "message": messageText };
+        var recepients = document.getElementById("connections").value;
+        payload = { "action": "onMessage", "sender": senderName, "message": messageText, "recepients": recepients };
 
         socket.send(JSON.stringify(payload));
 		
