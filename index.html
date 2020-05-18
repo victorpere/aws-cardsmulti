@@ -142,7 +142,7 @@ document.getElementById("senderInput").disabled = false;
         socket.onmessage = function(event) {
             var messageContent = JSON.parse(event.data);
 
-            if (messageContent.status == "New connection" || messageContent.status == "Connections update") {
+            if (messageContent.status == "New connection" || messageContent.status == "Connections update" || messageContent.status == "Created") {
                 var gameId = messageContent.gameId;
                 var connections = messageContent.connections;
 

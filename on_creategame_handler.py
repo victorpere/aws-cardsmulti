@@ -42,7 +42,15 @@ def handle(event, context):
 
     # Send the gameId to the creator
     apigatewaymanagementapi.post_to_connection(
-            Data=json.dumps({'gameId': gameId, 'gameCode': gameCode}),
+            Data=json.dumps({
+                'status': 'Created',
+                'connectionId': connectionId,
+                'playerName': playerName,
+                'gameId': gameId,
+                'creator': playerName,
+                'connections': [ connectionId ],
+                'gameCode': gameCode
+            }),
             ConnectionId=connectionId
         )
 
