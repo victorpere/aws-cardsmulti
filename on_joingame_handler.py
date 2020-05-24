@@ -79,8 +79,13 @@ def handle(event, context):
 
     # Create list of all connections
     connectionIds = []
+    players = []
     for connectedConnection in connections['Items']:
         connectionIds.append(connectedConnection['connectionId'])
+        players.append({
+            'connectionId': connectedConnection['connectionId'],
+            'playerName': connectedConnection['playerName']
+        })
 
     # Send connectionIds to all players in the game
     for connectedConnection in connections['Items']:
@@ -92,7 +97,8 @@ def handle(event, context):
                 'gameId': gameId,
                 'creator': creator,
                 'connections': connectionIds,
-                'gameCode': gameCode
+                'gameCode': gameCode,
+                'players' : players
             }),
             ConnectionId=connectedConnection['connectionId']
         )
