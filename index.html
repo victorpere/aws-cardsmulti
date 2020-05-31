@@ -21,7 +21,10 @@
 <button id="disconnectGameButton" onclick="disconnectGame()">Disconnect from game</button><br/><br/>
 
 <input id="messageInput" type="text" size="50" placeholder="Enter message to send"><br/>
-<button id="sendMessageButton" onclick="sendMessage()">Send</button><br/><br/>
+<button id="sendMessageButton" onclick="sendMessage()">Send message</button><br/><br/>
+
+<input id="dataInput" type="text" size="50" placeholder="JSON data to send"><br/>
+<button id="sendDataButton" onclick="sendData()">Send data</button><br/><br/>
 
 <button id="disconnectButton" onclick="disconnect()">Disconnect</button> 
 
@@ -46,6 +49,7 @@ document.getElementById("senderInput").disabled = false;
     document.getElementById("disconnectGameButton").disabled = true;
     document.getElementById("disconnectButton").disabled = true;
     document.getElementById("sendMessageButton").disabled = true;
+    document.getElementById("sendDataButton").disabled = true;
     document.getElementById("socketState").innerHTML = 'Connection Closed';
 
     document.getElementById("gameId").value = ""
@@ -61,6 +65,17 @@ document.getElementById("senderInput").disabled = false;
 		var messageText = document.getElementById("messageInput").value;
         var recepients = document.getElementById("connections").value;
         payload = { "action": "onMessage", "sender": senderName, "message": messageText, "recepients": recepients };
+
+        socket.send(JSON.stringify(payload));
+		
+		document.getElementById("messageInput").value = "";
+    }
+
+    function sendData(){
+		var senderName = document.getElementById("senderInput").value;
+		var data = JSON.parse(document.getElementById("dataInput").value);
+        var recepients = document.getElementById("connections").value;
+        payload = { "action": "onData", "sender": senderName, "data": data, "recepients": recepients };
 
         socket.send(JSON.stringify(payload));
 		
@@ -134,6 +149,7 @@ document.getElementById("senderInput").disabled = false;
             document.getElementById("joinGameButton").disabled = false;
             document.getElementById("disconnectButton").disabled = false;
             document.getElementById("sendMessageButton").disabled = false;
+            document.getElementById("sendDataButton").disabled = false;
 
             document.getElementById("gameId").value = ""
             document.getElementById("connections").value = ""
@@ -178,6 +194,7 @@ document.getElementById("senderInput").disabled = false;
             document.getElementById("disconnectGameButton").disabled = true;
             document.getElementById("disconnectButton").disabled = true;
             document.getElementById("sendMessageButton").disabled = true;
+            document.getElementById("sendDataButton").disabled = true;
 
             document.getElementById("gameId").value = ""
             document.getElementById("connections").value = ""

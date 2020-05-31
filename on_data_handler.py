@@ -9,14 +9,21 @@ def handle(event, context):
     endpoint_url = "https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"])
 
     # Request content
-    requestBody = json.loads(event['body'])
-    connectionIds = requestBody['connections']
-    data = requestBody['data']
+    senderConnectionId = event['requestContext']['connectionId']
+    body = json.loads(event['body'])
+    data = body['data']
+    recepients = body['recepients']
+    connectionIds = recepients.split(",")
 
-    # Send data
+    # Emit the recieved data to all the connected devices
     for connectionId in connectionIds:
         apigatewaymanagementapi.post_to_connection(
-            Data=data,
+            Data=json.dumps({ 
+                "status": "Data",
+                "sender": senderConnectionId,
+                "data": data,
+                "recepients": recepients
+            }),
             ConnectionId=connectionId
         )
 

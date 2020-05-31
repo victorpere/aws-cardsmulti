@@ -62,6 +62,14 @@ functions:
     environment:
       SOCKET_CONNECTIONS_TABLE_NAME: ${self:custom.socketConnectionsTableName}
 
+  onDataHandler:
+    handler: on_data_handler.handle
+    events:
+      - websocket:
+          route: onData
+    layers:
+      - { Ref: PythonPackageLayerLambdaLayer }
+
   onRegisterHandler:
     handler: on_register_handler.handle
     events:
