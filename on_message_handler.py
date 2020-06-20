@@ -17,16 +17,18 @@ def handle(event, context):
     recepients = body['recepients']
     connectionIds = recepients.split(",")
 
+    sendData = json.dumps({
+        "status": "Message",
+        "sender": senderConnectionId,
+        "message": message,
+        "recepients": recepients
+    }).encode('utf-8')
+
     # Emit the recieved message to all the connected devices
     for connectionId in connectionIds:
         if connectionId and connectionId != senderConnectionId:
             apigatewaymanagementapi.post_to_connection(
-                Data=json.dumps({ 
-                    "status": "Message",
-                    "sender": senderConnectionId,
-                    "message": message,
-                    "recepients": recepients
-                }),
+                Data=sendData,
                 ConnectionId=connectionId
             )
 
