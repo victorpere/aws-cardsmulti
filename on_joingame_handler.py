@@ -38,6 +38,7 @@ def handle(event, context):
     gameId = game['gameId']
     creator = game['creator']
     players = str(game['players'])
+    gameCode = game['gameCode']
 
     # Update the connection record with the gameId and playerName
     dbclient.update_item(
@@ -71,7 +72,9 @@ def handle(event, context):
                 'status': 'Joined', 
                 'gameId': gameId,
                 'creator': creator,
-                'playerName': playerName
+                'playerName': playerName,
+                'connectionId': connectionId,
+                'gameCode': gameCode
             }),
             ConnectionId=connectionId
         )
