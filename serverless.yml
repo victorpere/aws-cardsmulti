@@ -177,6 +177,7 @@ resources:
               NonKeyAttributes:
                 - creator
                 - players
+                - maxPlayers
               ProjectionType: INCLUDE
         BillingMode: PAY_PER_REQUEST
         SSESpecification:

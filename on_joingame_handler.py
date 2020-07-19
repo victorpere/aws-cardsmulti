@@ -39,6 +39,29 @@ def handle(event, context):
     creator = game['creator']
     players = str(game['players'])
     gameCode = game['gameCode']
+    maxPlayers = game['maxPlayers']
+
+    # Get all connection records in this game
+    connections = connectionsTable.query(
+        IndexName='gameIdIndex',
+        KeyConditionExpression=Key('gameId').eq(gameId)
+    )
+
+    # Number of connections at maximum
+    if connections['Count'] >= maxPlayers:
+        apigatewaymanagementapi.post_to_connection(
+            Data=json.dumps({
+                'status': 'DidNotJoin', 
+                'gameId': gameId,
+                'creator': creator,
+                'playerName': playerName,
+                'connectionId': connectionId,
+                'gameCode': gameCode,
+                'message': 'Maximum players reached'
+            }),
+            ConnectionId=connectionId
+        )
+        return {}
 
     # Update the connection record with the gameId and playerName
     dbclient.update_item(
@@ -50,21 +73,24 @@ def handle(event, context):
             ':p': { 'S': playerName }
         },
         ReturnValues="UPDATED_NEW"
-    )
+    ) 
 
-    # Get all connection records in this game
-    connections = connectionsTable.query(
-        IndexName='gameIdIndex',
-        KeyConditionExpression=Key('gameId').eq(gameId)
-    )
+    # Create list of all connections
+    connectionIds = []
+    players = []
+    for connectedConnection in connections['Items']:
+        connectionIds.append(connectedConnection['connectionId'])
+        players.append({
+            'connectionId': connectedConnection['connectionId'],
+            'playerName': connectedConnection['playerName']
+        })
 
-    # Something is wrong
-    if connections['Count'] == 0:
-        apigatewaymanagementapi.post_to_connection(
-                Data=json.dumps({ 'status': 'Error' }),
-                ConnectionId=connectionId
-            )
-        return {}
+    # Append the new player
+    connectionIds.append(connectionId)
+    players.append({
+        'connectionId': connectionId,
+        'playerName': playerName
+    })
 
     # Send confirmation
     apigatewaymanagementapi.post_to_connection(
@@ -79,19 +105,9 @@ def handle(event, context):
             ConnectionId=connectionId
         )
 
-    # Create list of all connections
-    connectionIds = []
-    players = []
-    for connectedConnection in connections['Items']:
-        connectionIds.append(connectedConnection['connectionId'])
-        players.append({
-            'connectionId': connectedConnection['connectionId'],
-            'playerName': connectedConnection['playerName']
-        })
-
-    # Send connectionIds to all players in the game
-    for connectedConnection in connections['Items']:
-            apigatewaymanagementapi.post_to_connection(
+    # Send update to other players in the game
+    for player in players:
+        apigatewaymanagementapi.post_to_connection(
             Data=json.dumps({
                 'status': 'New connection',
                 'connectionId': connectionId,
@@ -101,7 +117,7 @@ def handle(event, context):
                 'connections': connectionIds,
                 'players' : players
             }),
-            ConnectionId=connectedConnection['connectionId']
+            ConnectionId=player['connectionId']
         )
 
     return {}

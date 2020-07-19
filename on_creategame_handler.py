@@ -5,7 +5,7 @@ import uuid
 import random
 
 dynamodb = boto3.client('dynamodb')
-
+maxPlayersDefault = '4'
 
 def handle(event, context):
     # Setup
@@ -16,7 +16,9 @@ def handle(event, context):
 
     # Request content
     connectionId = event['requestContext']['connectionId']
-    playerName = json.loads(event['body'])['creator']
+    requestBody = json.loads(event['body'])
+    playerName = requestBody['creator']
+    maxPlayers = maxPlayersDefault
     gameId = str(uuid.uuid4())
     gameCode = str(random.randrange(1000,9999))
 
@@ -25,7 +27,8 @@ def handle(event, context):
         'gameId': {'S': gameId}, 
         'gameCode': {'S': gameCode}, 
         'creator': {'S': playerName},
-        'players': {'SS': [ connectionId ]}
+        'players': {'SS': [ connectionId ]},
+        'maxPlayers': {'N': maxPlayers }
     })
     
     # Update the connection record with the gameId and playerName
@@ -49,7 +52,8 @@ def handle(event, context):
                 'gameId': gameId,
                 'creator': playerName,
                 'connections': [ connectionId ],
-                'gameCode': gameCode
+                'gameCode': gameCode,
+                'maxPlayers': maxPlayers
             }),
             ConnectionId=connectionId
         )
