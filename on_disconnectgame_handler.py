@@ -62,7 +62,7 @@ def handle(event, context):
     for connectedConnection in connections['Items']:
         apigatewaymanagementapi.post_to_connection(
             Data=json.dumps({
-                'status': 'Connections update',
+                'status': 'Disconnection',
                 'connectionId': connectionId,
                 'playerName': playerName,
                 'gameId': gameId,
