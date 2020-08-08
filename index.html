@@ -75,7 +75,8 @@ document.getElementById("senderInput").disabled = false;
 		var senderName = document.getElementById("senderInput").value;
 		var data = JSON.parse(document.getElementById("dataInput").value);
         var recepients = document.getElementById("connections").value;
-        payload = { "action": "onData", "sender": senderName, "data": data, "recepients": recepients };
+        var type = "PlayerData";
+        payload = { "action": "onData", "sender": senderName, "data": data, "type": type, "recepients": recepients };
 
         socket.send(JSON.stringify(payload));
 		
