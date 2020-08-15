@@ -13,15 +13,16 @@ def handle(event, context):
     body = json.loads(event['body'])
     data = body['data']
     recepients = body['recepients']
-    status = body['type']
+    dataType = body['type']
     connectionIds = recepients.split(",")
 
     # Emit the recieved data to all the connected devices
     for connectionId in connectionIds:
         apigatewaymanagementapi.post_to_connection(
             Data=json.dumps({ 
-                "status": status,
+                "status": "GameData",
                 "sender": senderConnectionId,
+                "dataType": dataType,
                 "data": data,
                 "recepients": recepients
             }),
