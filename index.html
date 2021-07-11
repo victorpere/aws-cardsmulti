@@ -17,6 +17,7 @@
 
 <button id="createGameButton" onclick="createGame()">Create game</button> 
 <button id="findGameButton" onClick="findGame()">Find game</button>
+<button id="findGameByIdButton" onClick="findGameById()">Find game by Id</button>
 <button id="joinGameButton" onclick="joinGame()">Join game</button>
 <button id="disconnectGameButton" onclick="disconnectGame()">Disconnect from game</button><br/><br/>
 
@@ -45,6 +46,7 @@ document.getElementById("senderInput").disabled = false;
     document.getElementById("messageInput").disabled = true;
     document.getElementById("createGameButton").disabled = true;
     document.getElementById("findGameButton").disabled = true;
+    document.getElementById("findGameByIdButton").disabled = true;
     document.getElementById("joinGameButton").disabled = true;
     document.getElementById("disconnectGameButton").disabled = true;
     document.getElementById("disconnectButton").disabled = true;
@@ -103,6 +105,16 @@ document.getElementById("senderInput").disabled = false;
         }
     }
 
+    function findGameById() {
+        var gameId = prompt("Game Id:", "");
+
+        if (gameId != null && gameId != "") {
+            var senderName = document.getElementById("senderInput").value;
+            payload = { "action": "onFindGameById", "gameId": gameId };
+            socket.send(JSON.stringify(payload));
+        }
+    }
+
     function joinGame() {
         document.getElementById("gameId").value = ""
         document.getElementById("connections").value = ""
@@ -147,6 +159,7 @@ document.getElementById("senderInput").disabled = false;
             document.getElementById("messageInput").disabled = false;
             document.getElementById("createGameButton").disabled = false;
             document.getElementById("findGameButton").disabled = false;
+            document.getElementById("findGameByIdButton").disabled = false;
             document.getElementById("joinGameButton").disabled = false;
             document.getElementById("disconnectButton").disabled = false;
             document.getElementById("sendMessageButton").disabled = false;
@@ -194,6 +207,7 @@ document.getElementById("senderInput").disabled = false;
             document.getElementById("messageInput").disabled = true;
             document.getElementById("createGameButton").disabled = true;
             document.getElementById("findGameButton").disabled = true;
+            document.getElementById("findGameByIdButton").disabled = true;
             document.getElementById("joinGameButton").disabled = true;
             document.getElementById("disconnectGameButton").disabled = true;
             document.getElementById("disconnectButton").disabled = true;

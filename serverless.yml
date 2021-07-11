@@ -112,6 +112,16 @@ functions:
     environment:
       GAMES_TABLE_NAME: ${self:custom.gamesTableName}
 
+  onFindGameByIdHandler:
+    handler: on_findgamebyid_handler.handle
+    events:
+      - websocket:
+          route: onFindGameById
+    layers:
+      - { Ref: PythonPackageLayerLambdaLayer }
+    environment:
+      GAMES_TABLE_NAME: ${self:custom.gamesTableName}
+
   onDisconnectGameHandler:
     handler: on_disconnectgame_handler.handle
     events:
